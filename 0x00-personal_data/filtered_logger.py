@@ -23,8 +23,7 @@ def filter_datum(
 
 
 def get_logger() -> logging.Logger:
-    """Creates a new logger for user data.
-    """
+    """Returns a logging.Logger object."""
     logger = logging.getLogger("user_data")
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(RedactingFormatter(PII_FIELDS))
@@ -35,8 +34,7 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """Creates a connector to a database.
-    """
+    """Returns a connector to the database"""
     db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
     db_name = os.getenv("PERSONAL_DATA_DB_NAME", "")
     db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
@@ -52,7 +50,8 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 
 def main():
-    """Logs the information about user records in a table.
+    """Obtain a database connection using get_db and
+     retrieve all rows in the users table and display it.
     """
     fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
     columns = fields.split(',')
