@@ -6,9 +6,9 @@ import re
 import base64
 import binascii
 from .auth import Auth
-from nis import match
+#from nis import match
 from models.user import User
-from dataclasses import field
+#from dataclasses import field
 from typing import Tuple, TypeVar
 
 
