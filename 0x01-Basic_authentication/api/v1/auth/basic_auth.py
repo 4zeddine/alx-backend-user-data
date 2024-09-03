@@ -5,12 +5,11 @@ Basic Authentication module for the API
 import re
 import base64
 import binascii
-from dataclasses import field
-from nis import match
-from typing import Tuple, TypeVar
-
 from .auth import Auth
+from nis import match
 from models.user import User
+from dataclasses import field
+from typing import Tuple, TypeVar
 
 
 class BasicAuth(Auth):
@@ -60,3 +59,21 @@ class BasicAuth(Auth):
                 passwrd = matching.group('password')
                 return user, passwrd
         return None, None
+
+    def user_object_from_credentials(
+            self,
+            user_email: str,
+            user_pwd: str
+    ) -> TypeVar('User'):
+        """Gets the user object from
+        his credentials"""
+        if type(user_email) == str and type(user_pwd):
+            try:
+                the_user = User.search({'email': user_email})
+            except Exception:
+                return None
+            if len(the_user) <= 0:
+                return None
+            if the_user[0].is_valid_password(user_pwd):
+                return the_user[0]
+        return None
