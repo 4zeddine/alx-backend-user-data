@@ -5,6 +5,8 @@ Basic Authentication module for the API
 import re
 import base64
 import binascii
+from dataclasses import field
+from nis import match
 from typing import Tuple, TypeVar
 
 from .auth import Auth
@@ -20,10 +22,10 @@ class BasicAuth(Auth):
     ) -> str:
         """Returns the Base64 part of the Authorization header"""
         if type(authorization_header) == str:
-            pattern = r'Basic (?P<token>.+)'
-            field_match = re.fullmatch(pattern, authorization_header.strip())
-            if field_match is not None:
-                return field_match.group('token')
+            ptrn = r'Basic (?P<token>.+)'
+            matching = re.fullmatch(ptrn, authorization_header.strip())
+            if matching is not None:
+                return matching.group('token')
         return None
 
     def decode_base64_authorization_header(
@@ -40,3 +42,20 @@ class BasicAuth(Auth):
                 return res.decode('utf-8')
             except (binascii.Error, UnicodeDecodeError):
                 return None
+
+    def extract_user_credentials(
+            self,
+            decoded_base64_authorization_header: str
+    ) -> (str, str):
+        """Extracts the user credentials"""
+        if type(decoded_base64_authorization_header) == str:
+            user_pattern = r'(?P<user>[^:]+)'
+            password_pattern = r'(?P<password>.+)'
+            ptrn = fr'{user_pattern}:{password_pattern}'
+            matching = re.fullmatch(ptrn,
+                                    decoded_base64_authorization_header.strip())
+            if matching is not None:
+                user = matching.group('user')
+                passwrd = matching.group('password')
+                return user, passwrd
+        return None, None
