@@ -52,8 +52,9 @@ class BasicAuth(Auth):
             user_pattern = r'(?P<user>[^:]+)'
             password_pattern = r'(?P<password>.+)'
             ptrn = fr'{user_pattern}:{password_pattern}'
-            matching = re.fullmatch(ptrn,
-                                    decoded_base64_authorization_header.strip())
+            matching = re.fullmatch(
+                ptrn,
+                decoded_base64_authorization_header.strip())
             if matching is not None:
                 user = matching.group('user')
                 passwrd = matching.group('password')
