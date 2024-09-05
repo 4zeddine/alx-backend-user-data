@@ -36,7 +36,9 @@ def user_login() -> Tuple[str, int]:
         return res_dict
     return jsonify(pass_error), 401
 
-@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+
+@app_views.route(
+    '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
 def user_logout() -> Tuple[str, int]:
     """Route for Logout
     Returns:
