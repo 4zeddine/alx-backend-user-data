@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Session Authentication module for the API
+"""Session Authentication module for the API
 """
 from .auth import Auth
 from models.user import User
