@@ -38,5 +38,5 @@ class DB:
             self._session.commit()
         except Exception:
             self._session.rollback()
-            return None
+            return create_user
         return create_user
