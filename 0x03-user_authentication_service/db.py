@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, tuple_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -45,14 +45,16 @@ class DB:
 
     def find_user_by(self, **kwargs):
         """Returns the first row found in the users table"""
-        try:
-            query = self._session.query(User)
-            for key, value in kwargs.items():
-                if not hasattr(User, key):
-                    raise InvalidRequestError()
-                query = query.filter(getattr(User, key) == value)
-
-            user = query.one()
-            return user
-        except NoResultFound:
+        user_fields, user_values = [], []
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                user_attr = getattr(User, key)
+                user_fields.append(user_attr)
+                user_values.append(value)
+            else:
+                raise InvalidRequestError()
+        output = tuple_(*user_fields).in_([tuple(user_values)])
+        result = self._session.query(User).filter(output).first()
+        if result is None:
             raise NoResultFound()
+        return result
